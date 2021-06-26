@@ -6,7 +6,6 @@ const protocol = require("./protocol");
  * We use a standard Node.js module to work with UDP
  */
 var dgram = require("dgram");
-const { timingSafeEqual } = require("crypto");
 
 /*
  * Let's create a datagram socket. We will use it to send our UDP datagrams

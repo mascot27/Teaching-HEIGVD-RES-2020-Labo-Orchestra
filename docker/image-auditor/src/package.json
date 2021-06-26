@@ -1,0 +1,11 @@
+{
+  "name": "auditor",
+  "version": "1.0.0",
+  "description": "image auditor for res orchestra lab",
+  "main": "auditor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Corentin Zeller",
+  "license": "MIT"
+}
