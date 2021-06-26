@@ -1,6 +1,6 @@
-FROM node:4.3.1
+FROM node:14.17
 MAINTAINER Olivier Liechti <olivier.liechti@heig-vd.ch>
-
+# NOTE: fixed note version
 #
 # When we build the image, we copy the executable jar in the image file system. 
 #
