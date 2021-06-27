@@ -1,73 +1,43 @@
-const { v4: uuidv4 } = require("uuid");
-
-const protocol = require("./protocol");
-
-/*
- * We use a standard Node.js module to work with UDP
+/**
+ * musician application for orchestra lab
+ * @authors Corentin Zeller Thaillades Laurent
+ * @date 27 june 2021
+ * just like the thermometer example
  */
-var dgram = require("dgram");
 
-/*
- * Let's create a datagram socket. We will use it to send our UDP datagrams
- */
-var s = dgram.createSocket("udp4");
+const dgram = require('dgram');
+const socket = dgram.createSocket('udp4');
 
-/*
- * Let's define a javascript class for our thermometer. The constructor accepts
- * a location, an initial temperature and the amplitude of temperature variation
- * at every iteration
- */
-function Musician(sound) {
-  this.uuid = uuidv4();
-  this.sound = sound;
-  this.active_since = Date.now();
+const uuid = require('uuid');
+const protocol = require('./protocol');
 
-  this.Musician.prototype.update = function () {
-    var data = {
-      uuid: this.uuid,
-      sound: this.sound,
-      timestamp: new Date(),
-    };
-    var payload = JSON.stringify(data);
+const instrumentsSounds = {
+    piano : "ti-ta-ti",
+    trumpet : "pouet",
+    flute : "trulu",
+    violin : "gzi-gzi",
+    drum : "boum-boum"
+}
 
-    message = new Buffer(payload);
-    s.send(
-      message,
-      0,
-      message.length,
-      protocol.PROTOCOL_PORT,
-      protocol.PROTOCOL_MULTICAST_ADDRESS,
-      function (err, bytes) {
-        console.log(
-          "Sending payload: " + payload + " via port " + s.address().port
+function Musician(instrument) {
+    this.uuid = uuid.v4();
+    this.instrument = instrument;
+    this.sound = instrumentsSounds[instrument];
+
+    Musician.prototype.update = function () {
+        const data = {
+            uuid: this.uuid,
+            sound: this.sound,
+        };
+        const payload = JSON.stringify(data);
+        const msg = new Buffer.from(payload);
+        socket.send(msg, 0, msg.length, protocol.PROTOCOL_PORT, protocol.PROTOCOL_MULTICAST_ADDRESS,
+            function (err, bytes) {
+                console.log("Sending payload: " + payload + " via port " + socket.address().port);
+            }
         );
-      }
-    );
-  };
-
-  /*
-   * Let's take and send a measure every 500 ms
-   */
-  setInterval(this.update.bind(this), 1000);
+    }
+    setInterval(this.update.bind(this), 1000);
 }
 
-const instrumentSoundMap = new Map();
-instrumentSoundMap.set("piano", "ti-ta-ti");
-instrumentSoundMap.set("trumpet", "pouet");
-instrumentSoundMap.set("flute", "trulu");
-instrumentSoundMap.set("violin", "gzi-gzi");
-instrumentSoundMap.set("drum", "boum-boum");
-
-const currentInstrument = process.argv[2];
-
-if (!instrumentSoundMap.has(currentInstrument)) {
-  console.log("The instrument specified doesn't exist");
-  process.exit(1);
-}
-const currentSound = instrumentSoundMap.get(currentInstrument);
-
-/*
- * Let's create a new thermoter - the regular publication of measures will
- * be initiated within the constructor
- */
-var musician = new Musician(currentSound);
+const m = new Musician(process.argv[2]);

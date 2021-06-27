@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14.17
 
 #  put source in docker image
 
