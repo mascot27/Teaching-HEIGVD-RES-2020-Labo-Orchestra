@@ -7,5 +7,7 @@ COPY src /opt/app/
 WORKDIR /opt/app/
 RUN npm install
 
-#ENTRYPOINT ["node", "auditor.js"]
-CMD ["node", "auditor.js"]
+EXPOSE 2205
+
+ENTRYPOINT ["node", "auditor.js"]
+#CMD ["node", "auditor.js"]
