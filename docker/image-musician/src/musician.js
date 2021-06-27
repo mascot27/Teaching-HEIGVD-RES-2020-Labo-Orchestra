@@ -6,8 +6,10 @@
  */
 
 const dgram = require('dgram');
-const { v4: uuidv4 } = require('uuid');
-const PROTOCOL = require('./protocol');
+const socket = dgram.createSocket('udp4');
+
+const uuid = require('uuid');
+const protocol = require('./protocol');
 
 const instrumentsSounds = {
     piano : "ti-ta-ti",
@@ -18,7 +20,7 @@ const instrumentsSounds = {
 }
 
 function Musician(instrument) {
-    this.uuid = v4();
+    this.uuid = uuid.v4();
     this.instrument = instrument;
     this.sound = instrumentsSounds[instrument];
 
